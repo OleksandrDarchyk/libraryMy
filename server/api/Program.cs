@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApiDocument();
+builder.Services.AddCors();
 
 
 builder.Services.AddSingleton<AppOptions>(provider =>
@@ -32,6 +33,7 @@ app.MapControllers();
 app.UseOpenApi();
 app.UseSwaggerUi();
 app.GenerateApiClientsFromOpenApi("/../../client/src/generated-client.ts").GetAwaiter().GetResult();
+app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(x => true));
 
 var appOptions = app.Services.GetRequiredService<AppOptions>();
 Console.WriteLine(JsonSerializer.Serialize(appOptions));
