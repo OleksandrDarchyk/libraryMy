@@ -1,11 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using api;
+using api.Etc;
 using Infrastructure.Postgres.Scaffolding;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+builder.Services.AddOpenApiDocument();
 
 
 builder.Services.AddSingleton<AppOptions>(provider =>
@@ -25,7 +28,10 @@ var app = builder.Build();
 
 
 app.MapGet("/", () => "Hello World!");
-
+app.MapControllers();
+app.UseOpenApi();
+app.UseSwaggerUi();
+app.GenerateApiClientsFromOpenApi("/../../client/src/generated-client.ts").GetAwaiter().GetResult();
 
 var appOptions = app.Services.GetRequiredService<AppOptions>();
 Console.WriteLine(JsonSerializer.Serialize(appOptions));
