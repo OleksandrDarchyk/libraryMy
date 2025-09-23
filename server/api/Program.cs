@@ -3,6 +3,7 @@ using System.Text.Json;
 using api;
 using api.Etc;
 using api.Servises;
+using api.Servises.Interfaces;
 using Infrastructure.Postgres.Scaffolding;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();//dependency injection system
 builder.Services.AddOpenApiDocument();
 builder.Services.AddCors();
-builder.Services.AddScoped<AuthorService>();
-builder.Services.AddScoped<BookService>();
-builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<IAuthorService,AuthorService>();
+builder.Services.AddScoped<IBookService,BookService>();
+builder.Services.AddScoped<IGenreService,GenreService>();
 
 builder.Services.AddSingleton<AppOptions>(provider =>
 {
@@ -32,7 +33,7 @@ builder.Services.AddDbContext<MyDbContext>((services ,options) =>
 var app = builder.Build();
 
 
-app.MapGet("/", () => "Hello World!");
+
 app.MapControllers();//// middleware
 app.UseOpenApi();
 app.UseSwaggerUi();
