@@ -2,15 +2,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using api;
 using api.Etc;
+using api.Servises;
 using Infrastructure.Postgres.Scaffolding;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers();//dependency injection system
 builder.Services.AddOpenApiDocument();
 builder.Services.AddCors();
-
+builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<GenreService>();
 
 builder.Services.AddSingleton<AppOptions>(provider =>
 {
@@ -20,6 +23,7 @@ builder.Services.AddSingleton<AppOptions>(provider =>
     Validator.ValidateObject(appOptions ,new ValidationContext(appOptions), true);//optional check DataAnnotations
     return appOptions;
 });
+
 builder.Services.AddDbContext<MyDbContext>((services ,options) =>
 {
     options.UseNpgsql(services.GetRequiredService<AppOptions>().DbConnectionString);
@@ -29,7 +33,7 @@ var app = builder.Build();
 
 
 app.MapGet("/", () => "Hello World!");
-app.MapControllers();
+app.MapControllers();//// middleware
 app.UseOpenApi();
 app.UseSwaggerUi();
 app.GenerateApiClientsFromOpenApi("/../../client/src/generated-client.ts").GetAwaiter().GetResult();
