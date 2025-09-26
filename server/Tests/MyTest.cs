@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Tests;
 
-public class SetupTests(MyDbContext ctx)
+public class MyTest(MyDbContext ctx)
 {
     [Fact]
     public void XunitDependencyInjectionCanFindService()

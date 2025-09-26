@@ -6,7 +6,7 @@ using Testcontainers.PostgreSql;
 
 namespace Tests;
 
-public class Setup
+public class Startup
 {
     public static void ConfigureServices(IServiceCollection services)
     {
