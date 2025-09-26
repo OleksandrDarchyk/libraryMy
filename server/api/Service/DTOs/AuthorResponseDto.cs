@@ -3,6 +3,7 @@ namespace api.DTOs;
 
 public class AuthorResponseDto
 {
+    
     public string Id { get; set; } = null!;
 
     public string Name { get; set; } = null!;
