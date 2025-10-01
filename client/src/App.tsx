@@ -1,7 +1,6 @@
 import {createBrowserRouter, RouterProvider} from "react-router"
 import Home from "./Components/Home.tsx";
 
-
 function App() {
 
 
