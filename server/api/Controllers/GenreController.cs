@@ -1,5 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using api.DTOs;
-using api.Servises.Interfaces;
+using api.Servises.Interfaces; 
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
@@ -18,30 +19,67 @@ public class GenreController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<GenreResponseDto>>> GetGenres()
     {
-        throw new NotImplementedException();
+        var list = await _genreService.GetGenres();
+        return Ok(list);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GenreResponseDto>> GetGenreById(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var dto = await _genreService.GetGenreById(id);
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
-    public async Task<ActionResult<GenreResponseDto>> CreateGenre(GenreResponseDto dto)
+    public async Task<ActionResult<GenreResponseDto>> CreateGenre([FromBody] GenreResponseDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var created = await _genreService.CreateGenre(dto);
+            return CreatedAtAction(nameof(GetGenreById), new { id = created.Id }, created);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GenreResponseDto>> UpdateGenre(string id, GenreResponseDto dto)
+    public async Task<ActionResult<GenreResponseDto>> UpdateGenre(string id, [FromBody] GenreResponseDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var updated = await _genreService.UpdateGenre(id, dto);
+            return Ok(updated);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteGenre(string id)
+    public async Task<IActionResult> DeleteGenre(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _genreService.DeleteGenre(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

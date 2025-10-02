@@ -23,7 +23,7 @@ public class Program
         app.MapControllers();
         app.UseOpenApi();
         app.UseSwaggerUi();
-        app.GenerateApiClientsFromOpenApi("/../../client/src/generated-client.ts").GetAwaiter().GetResult();
+        app.GenerateApiClientsFromOpenApi("/../../client/src/api/generated-client.ts").GetAwaiter().GetResult();
         app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(x => true));
 
      

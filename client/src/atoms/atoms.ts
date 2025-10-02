@@ -1,4 +1,4 @@
-import {atom} from "jotai/vanilla/atom";
+import { atom } from "jotai";
 
 import type {AuthorResponseDto, BookResponseDto, GenreResponseDto} from "../api/generated-client.ts";
 

@@ -1,6 +1,6 @@
-import Home from "./pages/Home.tsx";
 import { useEffect } from "react";
-import { authorApi } from "./app/baseURL.ts";
+import { authorApi } from "./api/client.ts";
+import Router from "./app/Router.tsx";
 
 function App() {
     useEffect(() => {
@@ -11,7 +11,7 @@ function App() {
 
     return (
         <div>
-            <Home />
+            <Router />
         </div>
     );
 }

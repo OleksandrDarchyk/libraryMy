@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using api.DTOs;
 using api.Servises.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,41 +7,79 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
-public class AuthorController: ControllerBase
+public class AuthorController : ControllerBase
 {
     private readonly IAuthorService _authorService;
 
-    public AuthorController(IAuthorService authorService)// injects IAuthorService via Dependency Injection (constructor injection)
+    public AuthorController(IAuthorService authorService)
     {
-        _authorService = authorService;   
+        _authorService = authorService;
     }
+
     [HttpGet]
     public async Task<ActionResult<List<AuthorResponseDto>>> GetAuthors()
     {
-        throw new NotImplementedException();
+        var list = await _authorService.GetAuthors();
+        return Ok(list);
     }
 
-    [HttpGet("{id}")]   
+    [HttpGet("{id}")]
     public async Task<ActionResult<AuthorResponseDto>> GetAuthorById(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var dto = await _authorService.GetAuthorById(id);
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
-    
-    [HttpPost]  
-    public async Task<ActionResult<AuthorResponseDto>> CreateAuthor(AuthorResponseDto authorResponseDto)
+
+    [HttpPost]
+    public async Task<ActionResult<AuthorResponseDto>> CreateAuthor([FromBody] AuthorResponseDto authorResponseDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var created = await _authorService.CreateAuthor(authorResponseDto);
+            return CreatedAtAction(nameof(GetAuthorById), new { id = created.Id }, created);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
+
     [HttpPut("{id}")]
-    public async Task<ActionResult<AuthorResponseDto>> UpdateAuthor(string id, AuthorResponseDto authorResponseDto)
+    public async Task<ActionResult<AuthorResponseDto>> UpdateAuthor(string id, [FromBody] AuthorResponseDto authorResponseDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var updated = await _authorService.UpdateAuthor(id, authorResponseDto);
+            return Ok(updated);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
-    
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteAuthor(string id)
+    public async Task<IActionResult> DeleteAuthor(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _authorService.DeleteAuthor(id);
+            return NoContent(); // 204
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

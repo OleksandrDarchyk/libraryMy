@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using api.DTOs;
 using api.Servises.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ public class BookController : ControllerBase
 {
     private readonly IBookService _bookService;
 
-    public BookController(IBookService bookService) 
+    public BookController(IBookService bookService)
     {
         _bookService = bookService;
     }
@@ -18,30 +19,67 @@ public class BookController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<BookResponseDto>>> GetBooks()
     {
-        throw new NotImplementedException();
+        var list = await _bookService.GetBooks();
+        return Ok(list);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<BookResponseDto>> GetBookById(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var dto = await _bookService.GetBookById(id);
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookResponseDto>> CreateBook(BookResponseDto dto)
+    public async Task<ActionResult<BookResponseDto>> CreateBook([FromBody] BookResponseDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var created = await _bookService.CreateBook(dto);
+            return CreatedAtAction(nameof(GetBookById), new { id = created.Id }, created);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<BookResponseDto>> UpdateBook(string id, BookResponseDto dto)
+    public async Task<ActionResult<BookResponseDto>> UpdateBook(string id, [FromBody] BookResponseDto dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var updated = await _bookService.UpdateBook(id, dto);
+            return Ok(updated);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteBook(string id)
+    public async Task<IActionResult> DeleteBook(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _bookService.DeleteBook(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

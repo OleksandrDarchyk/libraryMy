@@ -1,32 +1,67 @@
+using System.ComponentModel.DataAnnotations;
 using api.DTOs;
 using api.Servises.Interfaces;
+using efscaffold.Entities;
+using Infrastructure.Postgres.Scaffolding; 
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Servises;
 
-public class GenreService:IGenreService
+public class GenreService : IGenreService
 {
-    public Task<List<GenreResponseDto>> GetGenres()
+    private readonly MyDbContext _db;
+    public GenreService(MyDbContext db) => _db = db;
+
+    public async Task<List<GenreResponseDto>> GetGenres() =>
+        await _db.Genres.AsNoTracking()
+            .Select(g => new GenreResponseDto { Id = g.Id, Name = g.Name })
+            .ToListAsync();
+
+    public async Task<GenreResponseDto> GetGenreById(string id)
     {
-        throw new NotImplementedException();
+        var g = await _db.Genres.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        if (g is null) throw new KeyNotFoundException();
+        return new GenreResponseDto { Id = g.Id, Name = g.Name };
     }
 
-    public Task<GenreResponseDto> CreateGenre(GenreResponseDto genreResponseDto)
+    public async Task<GenreResponseDto> CreateGenre(GenreResponseDto dto)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length < 3)
+            throw new ValidationException("Name must be at least 3 characters.");
+
+        var e = new Genre
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = dto.Name,
+            Createdat = DateTime.UtcNow
+        };
+
+        _db.Genres.Add(e);
+        await _db.SaveChangesAsync();
+
+        return new GenreResponseDto { Id = e.Id, Name = e.Name };
     }
 
-    public Task<GenreResponseDto> GetGenreById(string id)
+    public async Task<GenreResponseDto> UpdateGenre(string id, GenreResponseDto dto)
     {
-        throw new NotImplementedException();
+        var e = await _db.Genres.FirstOrDefaultAsync(x => x.Id == id);
+        if (e is null) throw new KeyNotFoundException();
+
+        if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length < 3)
+            throw new ValidationException("Name must be at least 3 characters.");
+
+        e.Name = dto.Name;
+        await _db.SaveChangesAsync();
+
+        return new GenreResponseDto { Id = e.Id, Name = e.Name };
     }
 
-    public Task<GenreResponseDto> UpdateGenre(string id, GenreResponseDto genreResponseDto)
+    public async Task DeleteGenre(string id)
     {
-        throw new NotImplementedException();
-    }
+        var e = await _db.Genres.FirstOrDefaultAsync(x => x.Id == id);
+        if (e is null) throw new KeyNotFoundException();
 
-    public Task DeleteGenre(string id)
-    {
-        throw new NotImplementedException();
+        _db.Genres.Remove(e);
+        await _db.SaveChangesAsync();
     }
 }
