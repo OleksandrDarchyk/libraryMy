@@ -25,9 +25,12 @@ public class Program
         app.UseOpenApi();
         app.UseSwaggerUi();
         app.GenerateApiClientsFromOpenApi("/../../client/src/api/generated-client.ts").GetAwaiter().GetResult();
-       
-
-     
+        if (app.Environment.IsDevelopment())
+        {
+            using var scope = app.Services.CreateScope();
+            var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+            seeder.Seed().GetAwaiter().GetResult();
+        }
 
         app.Run();
 
@@ -58,6 +61,7 @@ public class Program
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IGenreService, GenreService>();
+        services.AddScoped<ISeeder, Seeder>();
     }
 }
 
