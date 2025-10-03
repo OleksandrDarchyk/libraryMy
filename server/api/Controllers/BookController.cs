@@ -43,7 +43,7 @@ public class BookController : ControllerBase
         try
         {
             var created = await _bookService.CreateBook(dto);
-            return CreatedAtAction(nameof(GetBookById), new { id = created.Id }, created);
+            return Ok(created);
         }
         catch (ValidationException ex)
         {

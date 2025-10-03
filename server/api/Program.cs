@@ -20,11 +20,12 @@ public class Program
         Console.WriteLine(JsonSerializer.Serialize(appOptions));
 
         //// middleware
+        app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(x => true));
         app.MapControllers();
         app.UseOpenApi();
         app.UseSwaggerUi();
         app.GenerateApiClientsFromOpenApi("/../../client/src/api/generated-client.ts").GetAwaiter().GetResult();
-        app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(x => true));
+       
 
      
 

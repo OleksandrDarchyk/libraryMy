@@ -43,7 +43,7 @@ public class AuthorController : ControllerBase
         try
         {
             var created = await _authorService.CreateAuthor(authorDto);
-            return CreatedAtAction(nameof(GetAuthorById), new { id = created.Id }, created);
+            return Ok(created);
         }
         catch (ValidationException ex)
         {
