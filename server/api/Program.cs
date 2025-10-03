@@ -6,6 +6,7 @@ using api.Servises;
 using api.Servises.Interfaces;
 using Infrastructure.Postgres.Scaffolding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
 
 public class Program
 {
@@ -20,6 +21,7 @@ public class Program
         Console.WriteLine(JsonSerializer.Serialize(appOptions));
 
         //// middleware
+        app.UseExceptionHandler(_ => { });
         app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(x => true));
         app.MapControllers();
         app.UseOpenApi();
@@ -62,6 +64,7 @@ public class Program
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IGenreService, GenreService>();
         services.AddScoped<ISeeder, Seeder>();
+        services.AddExceptionHandler<MyGlobalExceptionHandler>();
     }
 }
 
