@@ -1,44 +1,76 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Home from "../pages/Home.tsx";
-import AuthorsList from "../pages/authors/AuthorsList.tsx";
-import AuthorsEdit from "../pages/authors/AuthorEdit.tsx";
-import BooksList from "../pages/books/BooksList.tsx";
-import BookEdit from "../pages/books/BookEdit.tsx";
-import GenresList from "../pages/genres/GenresList.tsx";
-import GenreEdit from "../pages/genres/GenreEdit.tsx";
+import Home from "../pages/Home";
+import Books from "../pages/Books";
+import Authors from "../pages/Authors";
+import Genres from "../pages/Genres";
+import BookDetails from "../pages/BookDetails";
+import AuthorDetails from "../pages/AuthorDetails";
+import Header from "../components/Header";
+import Navigation from "../components/Navigation";
 
+function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <div>
+            <Header />
+            <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px" }}>
+                <Navigation />
+                {children}
+            </div>
+        </div>
+    );
+}
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,
-    },
-    {
-        path: "/authors",
-        element: <AuthorsList />,
-    },
-    {
-        path: "/authors/:id",
-        element: <AuthorsEdit />,
+        element: (
+            <Layout>
+                <Home />
+            </Layout>
+        ),
     },
     {
         path: "/books",
-        element: <BooksList />,
+        element: (
+            <Layout>
+                <Books />
+            </Layout>
+        ),
     },
     {
         path: "/books/:id",
-        element: <BookEdit />,
+        element: (
+            <Layout>
+                <BookDetails />
+            </Layout>
+        ),
+    },
+    {
+        path: "/authors",
+        element: (
+            <Layout>
+                <Authors />
+            </Layout>
+        ),
+    },
+    {
+        path: "/authors/:id",
+        element: (
+            <Layout>
+                <AuthorDetails />
+            </Layout>
+        ),
     },
     {
         path: "/genres",
-        element: <GenresList />,
-    },
-    {
-        path: "/genres/:id",
-        element: <GenreEdit />,
+        element: (
+            <Layout>
+                <Genres />
+            </Layout>
+        ),
     },
 ]);
-// RouterProvider makes it possible to switch between pages (routes).
-export default function App() {
+
+export default function Router() {
     return <RouterProvider router={router} />;
 }

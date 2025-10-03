@@ -44,8 +44,7 @@ public class GenreController : ControllerBase
         try
         {
             var created = await _genreService.CreateGenre(dto);
-            return CreatedAtAction(nameof(GetGenreById), new { id = created.Id }, created);
-        }
+            return Ok(created);        }
         catch (ValidationException ex)
         {
             return BadRequest(new { error = ex.Message });
