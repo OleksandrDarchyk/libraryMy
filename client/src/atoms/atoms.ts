@@ -1,8 +1,7 @@
 import { atom } from "jotai";
+import type {AuthorDto, BookDto, GenreDto} from "../api/generated-client.ts";
 
-import type {AuthorResponseDto, BookResponseDto, GenreResponseDto} from "../api/generated-client.ts";
-
-export const booksAtom = atom<BookResponseDto[]>([]);
-export const authorsAtom = atom<AuthorResponseDto[]>([]);
-export const genresAtom = atom<GenreResponseDto[]>([]);
+export const booksAtom = atom<BookDto[]>([]);
+export const authorsAtom = atom<AuthorDto[]>([]);
+export const genresAtom = atom<GenreDto[]>([]);
 

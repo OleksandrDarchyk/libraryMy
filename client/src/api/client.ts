@@ -1,5 +1,5 @@
-
 import {AuthorClient, BookClient, GenreClient} from "./generated-client.ts";
+
 const isProduction = import.meta.env.PROD;
 
 const dev = "http://localhost:5050";
