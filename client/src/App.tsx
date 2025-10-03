@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { authorApi } from "./api/client.ts";
 import Router from "./app/Router.tsx";
 import type {AuthorDto} from "./api/generated-client.ts";
+import { Toaster } from "react-hot-toast";
 
 function App() {
     useEffect(() => {
@@ -13,6 +14,7 @@ function App() {
     return (
         <div>
             <Router />
+            <Toaster position="top-center" />
         </div>
     );
 }

@@ -1,11 +1,13 @@
 import type { InputHTMLAttributes } from "react";
 
-export default function FormInput(props: InputHTMLAttributes<HTMLInputElement>) {
+type Props = InputHTMLAttributes<HTMLInputElement>;
+
+export default function FormInput(props: Props) {
     return (
         <input
             {...props}
             style={{
-                padding: "8px 10px",
+                padding: 8,
                 border: "1px solid #ccc",
                 borderRadius: 6,
                 width: "100%",
