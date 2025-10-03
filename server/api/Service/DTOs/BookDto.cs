@@ -5,6 +5,9 @@ namespace api.DTOs;
 
 public class BookDto
 {
+    public BookDto()
+    {
+    }
     public BookDto(Book entity)
     {
         Id = entity.Id;

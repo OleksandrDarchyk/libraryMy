@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using api.DTOs;
+using api.Etc.DTOs;
 using api.Servises.Interfaces;
+using api.Service.DTOs.RequestDto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
@@ -10,11 +12,7 @@ namespace api.Controllers;
 public class BookController : ControllerBase
 {
     private readonly IBookService _bookService;
-
-    public BookController(IBookService bookService)
-    {
-        _bookService = bookService;
-    }
+    public BookController(IBookService bookService) => _bookService = bookService;
 
     [HttpGet]
     public async Task<ActionResult<List<BookDto>>> GetBooks()
@@ -38,10 +36,18 @@ public class BookController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookDto>> CreateBook([FromBody] BookDto dto)
+    public async Task<ActionResult<BookDto>> CreateBook([FromBody] CreateBookRequestDto req)
     {
         try
         {
+            var dto = new BookDto
+            {
+                Title = req.Title,
+                Pages = req.Pages,
+                Genre = string.IsNullOrWhiteSpace(req.GenreId) ? null : new GenreDto { Id = req.GenreId },
+                AuthorsIds = req.AuthorsIds ?? new List<string>()
+            };
+
             var created = await _bookService.CreateBook(dto);
             return Ok(created);
         }
@@ -52,10 +58,24 @@ public class BookController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<BookDto>> UpdateBook(string id, [FromBody] BookDto dto)
+    public async Task<ActionResult<BookDto>> UpdateBook(string id, [FromBody] UpdateBookRequestDto req)
     {
         try
         {
+            var dto = new BookDto();
+
+            if (!string.IsNullOrWhiteSpace(req.NewTitle))
+                dto.Title = req.NewTitle;
+
+            if (req.NewPageCount.HasValue)
+                dto.Pages = req.NewPageCount.Value;
+
+            if (!string.IsNullOrWhiteSpace(req.GenreId))
+                dto.Genre = new GenreDto { Id = req.GenreId };
+
+            if (req.AuthorsIds is not null)
+                dto.AuthorsIds = req.AuthorsIds;
+
             var updated = await _bookService.UpdateBook(id, dto);
             return Ok(updated);
         }

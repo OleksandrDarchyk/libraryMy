@@ -3,7 +3,10 @@ using efscaffold.Entities;
 namespace api.DTOs;
 
 public class AuthorDto
-{
+{   
+    public AuthorDto()
+    {
+    }
     public AuthorDto(Author entity)
     {
         Id = entity.Id;

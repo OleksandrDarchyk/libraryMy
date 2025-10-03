@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using api.DTOs;
 using api.Etc.DTOs;
-using api.Servises.Interfaces; 
+using api.Servises.Interfaces;
+using api.Service.DTOs.RequestDto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
@@ -11,11 +11,7 @@ namespace api.Controllers;
 public class GenreController : ControllerBase
 {
     private readonly IGenreService _genreService;
-
-    public GenreController(IGenreService genreService)
-    {
-        _genreService = genreService;
-    }
+    public GenreController(IGenreService genreService) => _genreService = genreService;
 
     [HttpGet]
     public async Task<ActionResult<List<GenreDto>>> GetGenres()
@@ -39,12 +35,13 @@ public class GenreController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<GenreDto>> CreateGenre([FromBody] GenreDto dto)
+    public async Task<ActionResult<GenreDto>> CreateGenre([FromBody] CreateGenreRequestDto req)
     {
         try
         {
-            var created = await _genreService.CreateGenre(dto);
-            return Ok(created);        }
+            var created = await _genreService.CreateGenre(new GenreDto { Name = req.Name });
+            return Ok(created);
+        }
         catch (ValidationException ex)
         {
             return BadRequest(new { error = ex.Message });
@@ -52,11 +49,11 @@ public class GenreController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GenreDto>> UpdateGenre(string id, [FromBody] GenreDto dto)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(string id, [FromBody] UpdateGenreRequestDto req)
     {
         try
         {
-            var updated = await _genreService.UpdateGenre(id, dto);
+            var updated = await _genreService.UpdateGenre(id, new GenreDto { Name = req.NewName });
             return Ok(updated);
         }
         catch (KeyNotFoundException)

@@ -4,6 +4,9 @@ namespace api.Etc.DTOs;
 
 public class GenreDto
 {
+    public GenreDto()
+    {
+    }
     public GenreDto(Genre entity)
     {
         Id = entity.Id;
