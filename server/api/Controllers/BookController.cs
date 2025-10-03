@@ -17,14 +17,14 @@ public class BookController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<BookResponseDto>>> GetBooks()
+    public async Task<ActionResult<List<BookDto>>> GetBooks()
     {
         var list = await _bookService.GetBooks();
         return Ok(list);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<BookResponseDto>> GetBookById(string id)
+    public async Task<ActionResult<BookDto>> GetBookById(string id)
     {
         try
         {
@@ -38,7 +38,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookResponseDto>> CreateBook([FromBody] BookResponseDto dto)
+    public async Task<ActionResult<BookDto>> CreateBook([FromBody] BookDto dto)
     {
         try
         {
@@ -52,7 +52,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<BookResponseDto>> UpdateBook(string id, [FromBody] BookResponseDto dto)
+    public async Task<ActionResult<BookDto>> UpdateBook(string id, [FromBody] BookDto dto)
     {
         try
         {

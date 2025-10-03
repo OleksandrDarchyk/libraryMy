@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using api.DTOs;
+using api.Etc.DTOs;
 using api.Servises.Interfaces; 
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,14 +18,14 @@ public class GenreController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<GenreResponseDto>>> GetGenres()
+    public async Task<ActionResult<List<GenreDto>>> GetGenres()
     {
         var list = await _genreService.GetGenres();
         return Ok(list);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GenreResponseDto>> GetGenreById(string id)
+    public async Task<ActionResult<GenreDto>> GetGenreById(string id)
     {
         try
         {
@@ -38,7 +39,7 @@ public class GenreController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<GenreResponseDto>> CreateGenre([FromBody] GenreResponseDto dto)
+    public async Task<ActionResult<GenreDto>> CreateGenre([FromBody] GenreDto dto)
     {
         try
         {
@@ -52,7 +53,7 @@ public class GenreController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<GenreResponseDto>> UpdateGenre(string id, [FromBody] GenreResponseDto dto)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(string id, [FromBody] GenreDto dto)
     {
         try
         {

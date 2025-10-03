@@ -17,14 +17,14 @@ public class AuthorController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<AuthorResponseDto>>> GetAuthors()
+    public async Task<ActionResult<List<AuthorDto>>> GetAuthors()
     {
         var list = await _authorService.GetAuthors();
         return Ok(list);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AuthorResponseDto>> GetAuthorById(string id)
+    public async Task<ActionResult<AuthorDto>> GetAuthorById(string id)
     {
         try
         {
@@ -38,11 +38,11 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AuthorResponseDto>> CreateAuthor([FromBody] AuthorResponseDto authorResponseDto)
+    public async Task<ActionResult<AuthorDto>> CreateAuthor([FromBody] AuthorDto authorDto)
     {
         try
         {
-            var created = await _authorService.CreateAuthor(authorResponseDto);
+            var created = await _authorService.CreateAuthor(authorDto);
             return CreatedAtAction(nameof(GetAuthorById), new { id = created.Id }, created);
         }
         catch (ValidationException ex)
@@ -52,11 +52,11 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<AuthorResponseDto>> UpdateAuthor(string id, [FromBody] AuthorResponseDto authorResponseDto)
+    public async Task<ActionResult<AuthorDto>> UpdateAuthor(string id, [FromBody] AuthorDto authorDto)
     {
         try
         {
-            var updated = await _authorService.UpdateAuthor(id, authorResponseDto);
+            var updated = await _authorService.UpdateAuthor(id, authorDto);
             return Ok(updated);
         }
         catch (KeyNotFoundException)

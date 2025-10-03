@@ -20,7 +20,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AuthorResponseDto"
+                    "$ref": "#/components/schemas/AuthorDto"
                   }
                 }
               }
@@ -34,11 +34,11 @@
         ],
         "operationId": "Author_CreateAuthor",
         "requestBody": {
-          "x-name": "authorResponseDto",
+          "x-name": "authorDto",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthorResponseDto"
+                "$ref": "#/components/schemas/AuthorDto"
               }
             }
           },
@@ -51,7 +51,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorResponseDto"
+                  "$ref": "#/components/schemas/AuthorDto"
                 }
               }
             }
@@ -82,7 +82,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorResponseDto"
+                  "$ref": "#/components/schemas/AuthorDto"
                 }
               }
             }
@@ -106,11 +106,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "authorResponseDto",
+          "x-name": "authorDto",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthorResponseDto"
+                "$ref": "#/components/schemas/AuthorDto"
               }
             }
           },
@@ -123,7 +123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthorResponseDto"
+                  "$ref": "#/components/schemas/AuthorDto"
                 }
               }
             }
@@ -175,7 +175,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/BookResponseDto"
+                    "$ref": "#/components/schemas/BookDto"
                   }
                 }
               }
@@ -193,7 +193,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookResponseDto"
+                "$ref": "#/components/schemas/BookDto"
               }
             }
           },
@@ -206,7 +206,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookResponseDto"
+                  "$ref": "#/components/schemas/BookDto"
                 }
               }
             }
@@ -237,7 +237,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookResponseDto"
+                  "$ref": "#/components/schemas/BookDto"
                 }
               }
             }
@@ -265,7 +265,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookResponseDto"
+                "$ref": "#/components/schemas/BookDto"
               }
             }
           },
@@ -278,7 +278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookResponseDto"
+                  "$ref": "#/components/schemas/BookDto"
                 }
               }
             }
@@ -330,7 +330,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GenreResponseDto"
+                    "$ref": "#/components/schemas/GenreDto"
                   }
                 }
               }
@@ -348,7 +348,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GenreResponseDto"
+                "$ref": "#/components/schemas/GenreDto"
               }
             }
           },
@@ -361,7 +361,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenreResponseDto"
+                  "$ref": "#/components/schemas/GenreDto"
                 }
               }
             }
@@ -392,7 +392,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenreResponseDto"
+                  "$ref": "#/components/schemas/GenreDto"
                 }
               }
             }
@@ -420,7 +420,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GenreResponseDto"
+                "$ref": "#/components/schemas/GenreDto"
               }
             }
           },
@@ -433,7 +433,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenreResponseDto"
+                  "$ref": "#/components/schemas/GenreDto"
                 }
               }
             }
@@ -474,7 +474,7 @@
   },
   "components": {
     "schemas": {
-      "AuthorResponseDto": {
+      "AuthorDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -489,15 +489,15 @@
             "format": "date-time",
             "nullable": true
           },
-          "books": {
+          "bookIds": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/BookResponseDto"
+              "type": "string"
             }
           }
         }
       },
-      "BookResponseDto": {
+      "BookDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -520,19 +520,19 @@
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/GenreResponseDto"
+                "$ref": "#/components/schemas/GenreDto"
               }
             ]
           },
-          "authors": {
+          "authorsIds": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AuthorResponseDto"
+              "type": "string"
             }
           }
         }
       },
-      "GenreResponseDto": {
+      "GenreDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
