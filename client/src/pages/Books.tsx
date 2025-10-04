@@ -1,24 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { bookApi } from "../api/client";
-import type { BookDto } from "../api/generated-client";
+import { useAtom } from "jotai";
+import { booksAtom } from "../atoms/atoms";
+import useLibraryCrud from "../useLibraryCrud";
 import BookCard from "../components/BookCard";
-import { getErrorMessage } from "../lib/errors";
 
 export default function Books() {
-    const [items, setItems] = useState<BookDto[]>([]);
-    const [err, setErr] = useState<string | null>(null);
+    const [books] = useAtom(booksAtom);
+    const { getBooks, deleteBook } = useLibraryCrud();
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState("");
 
     const load = async (): Promise<void> => {
         setLoading(true);
-        setErr(null);
         try {
-            const data = await bookApi.getBooks();
-            setItems(data);
-        } catch (err: unknown) {
-            setErr(getErrorMessage(err));
+            await getBooks();
         } finally {
             setLoading(false);
         }
@@ -26,22 +22,18 @@ export default function Books() {
 
     useEffect(() => {
         void load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const filtered = useMemo(() => {
         const s = q.trim().toLowerCase();
-        if (!s) return items;
-        return items.filter(b => (b.title ?? "").toLowerCase().includes(s));
-    }, [items, q]);
+        if (!s) return books;
+        return books.filter(b => (b.title ?? "").toLowerCase().includes(s));
+    }, [books, q]);
 
     const handleDelete = async (id: string): Promise<void> => {
         if (!window.confirm("Delete this book?")) return;
-        try {
-            await bookApi.deleteBook(id);
-            setItems(prev => prev.filter(x => x.id !== id));
-        } catch (err: unknown) {
-            window.alert(getErrorMessage(err));
-        }
+        await deleteBook(id);
     };
 
     return (
@@ -60,8 +52,7 @@ export default function Books() {
                 <Link to="/books/new">+ New book</Link>
             </div>
 
-            {err && <div style={{ color: "crimson", marginBottom: 12 }}>{err}</div>}
-            {loading && !items.length && <div>Loading...</div>}
+            {loading && !books.length && <div>Loading...</div>}
             {!loading && !filtered.length && <div>No books yet</div>}
 
             <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
@@ -69,7 +60,7 @@ export default function Books() {
                     <div key={b.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         <BookCard book={b} />
                         <button
-                            onClick={() => handleDelete(b.id!)}
+                            onClick={() => b.id && handleDelete(b.id)}
                             style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #d33", color: "#d33", background: "transparent" }}
                         >
                             delete

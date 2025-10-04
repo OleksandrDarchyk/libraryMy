@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { genreApi } from "../api/client";
 import FormInput from "../components/FormInput";
@@ -8,16 +8,23 @@ import { getErrorMessage } from "../lib/errors";
 export default function NewGenre() {
     const [name, setName] = useState("");
     const [err, setErr] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
+
+    const canSubmit = useMemo(() => name.trim().length >= 3, [name]);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
+        if (!canSubmit || submitting) return;
         setErr(null);
+        setSubmitting(true);
         try {
-            await genreApi.createGenre({ name });
+            await genreApi.createGenre({ name: name.trim() });
             navigate("/genres");
         } catch (ex: unknown) {
             setErr(getErrorMessage(ex));
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -32,9 +39,12 @@ export default function NewGenre() {
                     onChange={(e) => setName(e.currentTarget.value)}
                     required
                     minLength={3}
+                    autoFocus
                 />
             </div>
-            <SubmitButton type="submit">Create</SubmitButton>
+            <SubmitButton type="submit" disabled={!canSubmit || submitting}>
+                {submitting ? "Creating..." : "Create"}
+            </SubmitButton>
         </form>
     );
 }

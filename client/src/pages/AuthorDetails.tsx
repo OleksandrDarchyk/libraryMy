@@ -1,32 +1,61 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { authorApi } from "../api/client";
 import type { AuthorDto } from "../api/generated-client";
+import { getErrorMessage } from "../lib/errors";
 
 export default function AuthorDetails() {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const [item, setItem] = useState<AuthorDto | null>(null);
     const [err, setErr] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (!id) return;
-        authorApi.getAuthorById(id).then(setItem).catch(e => setErr(String(e)));
+    const load = useCallback(async () => {
+        if (!id) {
+            setErr("Invalid author id");
+            return;
+        }
+        setLoading(true);
+        setErr(null);
+        try {
+            const data = await authorApi.getAuthorById(id);
+            setItem(data);
+        } catch (e: unknown) {
+            setErr(getErrorMessage(e));
+        } finally {
+            setLoading(false);
+        }
     }, [id]);
 
-    if (err) return <div>{err}</div>;
-    if (!item) return <div>Loading...</div>;
+    useEffect(() => {
+        void load();
+    }, [load]);
+
+    if (loading && !item) return <div>Loading...</div>;
+    if (err) return <div style={{ color: "crimson" }}>{err}</div>;
+    if (!item) return null;
 
     return (
         <div>
-            <h2>{item.name}</h2>
-            {item.bookIds?.length ? (
-                <div style={{ marginTop: 8 }}>
-                    <div style={{ fontWeight: 600 }}>books:</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                <h2 style={{ margin: 0 }}>{item.name}</h2>
+                <button onClick={load} disabled={loading} style={{ marginLeft: "auto", padding: "6px 10px", borderRadius: 6 }}>
+                    {loading ? "Loading..." : "Refresh"}
+                </button>
+            </div>
+
+            {!!item.bookIds?.length && (
+                <div>
+                    <div style={{ fontWeight: 600, marginBottom: 6 }}>Books</div>
                     <ul>
-                        {item.bookIds.map(x => <li key={x}>{x}</li>)}
+                        {item.bookIds.map(bid => (
+                            <li key={bid}>
+                                <Link to={`/books/${bid}`}>{bid}</Link>
+                            </li>
+                        ))}
                     </ul>
                 </div>
-            ) : null}
+            )}
         </div>
     );
 }

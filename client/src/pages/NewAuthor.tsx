@@ -1,30 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authorApi } from "../api/client";
 import FormInput from "../components/FormInput";
 import SubmitButton from "../components/SubmitButton";
-import { getErrorMessage } from "../lib/errors";
+import useLibraryCrud from "../useLibraryCrud";
 
 export default function NewAuthor() {
     const [name, setName] = useState("");
-    const [err, setErr] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
+    const { createAuthor } = useLibraryCrud();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        setErr(null);
+        setSubmitting(true);
         try {
-            await authorApi.createAuthor({ name });
+            await createAuthor({ name });
             navigate("/authors");
-        } catch (err: unknown) {
-            setErr(getErrorMessage(err));
+        } finally {
+            setSubmitting(false);
         }
     };
 
     return (
         <form onSubmit={onSubmit} style={{ maxWidth: 480 }}>
             <h3 style={{ marginBottom: 12 }}>Create author</h3>
-            {err && <div style={{ color: "crimson", marginBottom: 8 }}>{err}</div>}
             <div style={{ marginBottom: 8 }}>
                 <label>Name</label>
                 <FormInput
@@ -34,7 +33,9 @@ export default function NewAuthor() {
                     minLength={3}
                 />
             </div>
-            <SubmitButton type="submit">Create</SubmitButton>
+            <SubmitButton type="submit" disabled={submitting || name.trim().length < 3}>
+                {submitting ? "Creating..." : "Create"}
+            </SubmitButton>
         </form>
     );
 }

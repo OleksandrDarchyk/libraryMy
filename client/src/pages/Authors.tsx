@@ -1,32 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { authorApi } from "../api/client";
 import type { AuthorDto } from "../api/generated-client";
 import AuthorCard from "../components/AuthorCard";
 import { getErrorMessage } from "../lib/errors";
+import toast from "react-hot-toast";
 
 export default function Authors() {
     const [items, setItems] = useState<AuthorDto[]>([]);
     const [err, setErr] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
     const [q, setQ] = useState("");
 
-    const load = async (): Promise<void> => {
+    const load = useCallback(async () => {
         setLoading(true);
         setErr(null);
         try {
             const data = await authorApi.getAuthors();
             setItems(data);
-        } catch (err: unknown) {
-            setErr(getErrorMessage(err));
+        } catch (e: unknown) {
+            setErr(getErrorMessage(e));
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         void load();
-    }, []);
+    }, [load]);
 
     const filtered = useMemo(() => {
         const s = q.trim().toLowerCase();
@@ -34,13 +36,18 @@ export default function Authors() {
         return items.filter(a => (a.name ?? "").toLowerCase().includes(s));
     }, [items, q]);
 
-    const handleDelete = async (id: string): Promise<void> => {
+    const handleDelete = async (id?: string) => {
+        if (!id) return;
         if (!window.confirm("Delete this author?")) return;
+        setDeletingId(id);
         try {
             await authorApi.deleteAuthor(id);
             setItems(prev => prev.filter(x => x.id !== id));
-        } catch (err: unknown) {
-            window.alert(getErrorMessage(err));
+            toast.success("Author deleted");
+        } catch (e: unknown) {
+            toast.error(getErrorMessage(e));
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -68,12 +75,25 @@ export default function Authors() {
                 {filtered.map(a => (
                     <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         <AuthorCard author={a} />
-                        <button
-                            onClick={() => handleDelete(a.id!)}
-                            style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #d33", color: "#d33", background: "transparent" }}
-                        >
-                            delete
-                        </button>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Link to={`/authors/${a.id}`} style={{ padding: "6px 10px" }}>
+                                details
+                            </Link>
+                            <button
+                                onClick={() => handleDelete(a.id)}
+                                disabled={deletingId === a.id}
+                                style={{
+                                    padding: "6px 10px",
+                                    borderRadius: 6,
+                                    border: "1px solid #d33",
+                                    color: deletingId === a.id ? "#999" : "#d33",
+                                    background: "transparent",
+                                    cursor: deletingId === a.id ? "not-allowed" : "pointer"
+                                }}
+                            >
+                                {deletingId === a.id ? "deleting..." : "delete"}
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
