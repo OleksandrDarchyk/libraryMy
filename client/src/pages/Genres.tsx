@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
@@ -22,7 +23,6 @@ export default function Genres() {
 
     useEffect(() => {
         void load();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const filtered = useMemo(() => {
@@ -52,19 +52,27 @@ export default function Genres() {
                 <Link to="/genres/new">+ New genre</Link>
             </div>
 
-            {loading && !genres.length && <div>Loading...</div>}
+            {loading && !filtered.length && <div>Loading...</div>}
             {!loading && !filtered.length && <div>No genres yet</div>}
 
             <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
                 {filtered.map(g => (
                     <div key={g.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         <GenreCard genre={g} />
-                        <button
-                            onClick={() => g.id && handleDelete(g.id)}
-                            style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #d33", color: "#d33", background: "transparent" }}
-                        >
-                            delete
-                        </button>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Link
+                                to={`/genres/${g.id}/edit`}
+                                style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#111" }}
+                            >
+                                edit
+                            </Link>
+                            <button
+                                onClick={() => g.id && handleDelete(g.id)}
+                                style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #d33", color: "#d33", background: "transparent" }}
+                            >
+                                delete
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
