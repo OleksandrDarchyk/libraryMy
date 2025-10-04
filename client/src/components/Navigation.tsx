@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-const linkStyle: React.CSSProperties = { textDecoration: "none", color: "#333" };
+const linkStyle: React.CSSProperties = { textDecoration: "none", color: "#a3aedc" };
 const itemStyle: React.CSSProperties = { marginRight: 12 };
 
 export default function Navigation() {

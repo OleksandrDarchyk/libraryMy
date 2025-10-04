@@ -62,7 +62,7 @@ export default function Genres() {
                         <div style={{ display: "flex", gap: 8 }}>
                             <Link
                                 to={`/genres/${g.id}/edit`}
-                                style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#111" }}
+                                style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#ffffff" }}
                             >
                                 edit
                             </Link>
