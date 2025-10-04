@@ -1,9 +1,10 @@
-﻿using Infrastructure.Postgres.Scaffolding;
+
+using Infrastructure.Postgres.Scaffolding;
 using Xunit;
 
-namespace Tests;
+namespace tests;
 
-public class MyTest(MyDbContext ctx)
+public class SetupTests(MyDbContext ctx)
 {
     [Fact]
     public void XunitDependencyInjectionCanFindService()
