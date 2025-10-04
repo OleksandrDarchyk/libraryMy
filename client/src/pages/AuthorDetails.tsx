@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { authorApi } from "../api/client";
@@ -39,9 +40,17 @@ export default function AuthorDetails() {
         <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                 <h2 style={{ margin: 0 }}>{item.name}</h2>
-                <button onClick={load} disabled={loading} style={{ marginLeft: "auto", padding: "6px 10px", borderRadius: 6 }}>
-                    {loading ? "Loading..." : "Refresh"}
-                </button>
+                <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+                    <Link
+                        to={`/authors/${id}/edit`}
+                        style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#111" }}
+                    >
+                        edit
+                    </Link>
+                    <button onClick={load} disabled={loading} style={{ padding: "6px 10px", borderRadius: 6 }}>
+                        {loading ? "Loading..." : "Refresh"}
+                    </button>
+                </div>
             </div>
 
             {!!item.bookIds?.length && (
