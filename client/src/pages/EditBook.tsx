@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { authorApi, bookApi, genreApi } from "../api/client";
-import type { AuthorDto, BookDto, GenreDto } from "../api/generated-client";
+import type { AuthorDto, GenreDto } from "../api/generated-client";
 import FormInput from "../components/FormInput";
 import SubmitButton from "../components/SubmitButton";
 import useLibraryCrud from "../useLibraryCrud";

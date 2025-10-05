@@ -43,7 +43,7 @@ export default function AuthorDetails() {
                 <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
                     <Link
                         to={`/authors/${id}/edit`}
-                        style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#ffffff" }}
+                        style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #333", textDecoration: "none", color: "#4ac0d3" }}
                     >
                         edit
                     </Link>
